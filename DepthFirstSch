@@ -1,0 +1,50 @@
+from collections import defaultdict
+
+class DFSGraph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = defaultdict(list)
+        self.time = 0
+
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
+
+    def dfs_util(self, u, visited, discovery, finish, parent):
+        visited[u] = True
+        self.time += 1
+        discovery[u] = self.time
+
+        for v in self.graph[u]:
+            if not visited[v]:
+                parent[v] = u
+                self.dfs_util(v, visited, discovery, finish, parent)
+
+        self.time += 1
+        finish[u] = self.time
+
+    def dfs(self):
+        visited = [False] * self.V
+        discovery = [0] * self.V
+        finish = [0] * self.V
+        parent = [None] * self.V
+
+        for u in range(self.V):
+            if not visited[u]:
+                self.dfs_util(u, visited, discovery, finish, parent)
+
+        return discovery, finish, parent
+
+
+# Example from CLRS Figure 22.6
+g = DFSGraph(6)
+edges = [
+    (0, 1), (1, 2), (1, 4),
+    (2, 3), (4, 5)
+]
+for u, v in edges:
+    g.add_edge(u, v)
+
+discovery, finish, parent = g.dfs()
+print("Discovery times:", discovery)
+print("Finish times:", finish)
+print("Parents:", parent)
