@@ -1,0 +1,37 @@
+from collections import defaultdict
+
+class Graph:
+    def __init__(self, vertices):
+        self.graph = defaultdict(list)
+        self.V = vertices
+
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
+
+    def topological_sort_util(self, v, visited, stack):
+        visited[v] = True
+        for i in self.graph[v]:
+            if not visited[i]:
+                self.topological_sort_util(i, visited, stack)
+        stack.insert(0, v)
+
+    def topological_sort(self):
+        visited = [False] * self.V
+        stack = []
+        for i in range(self.V):
+            if not visited[i]:
+                self.topological_sort_util(i, visited, stack)
+        return stack
+
+
+# Example from CLRS Figure 22.8
+g = Graph(6)
+edges = [
+    (5, 2), (5, 0),
+    (4, 0), (4, 1),
+    (2, 3), (3, 1)
+]
+for u, v in edges:
+    g.add_edge(u, v)
+
+print("Topological Sort:", g.topological_sort())
